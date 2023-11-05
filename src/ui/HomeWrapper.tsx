@@ -7,7 +7,7 @@ export default function HomeWrapper() {
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content bg-base-100">
-        {/* Page content here */}
+        
         {/* Navbar */}
         <TopNav />
         <div className="px-3 pt-3">
