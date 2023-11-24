@@ -31,7 +31,7 @@ export default function Consumption() {
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
     </Pie>
-    <Legend verticalAlign="middle" align="right" width="30%"/>
+    <Legend verticalAlign="middle" align="right" width={40}/>
     </PieChart>
     </div>
   );
