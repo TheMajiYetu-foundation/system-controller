@@ -1,50 +1,59 @@
 import { Bar, BarChart, CartesianGrid, Legend, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import sensorInfo from '../../data/flow_sensors.json';
+import { SensorType } from '../../types/sensors';
 
-const data = [
-    {
-      name: 'Jan',
-      mrn: 4000,
-      afn: 2400,
-      evn: 2400,
-    },
-    {
-      name: 'Feb',
-      mrn: 3000,
-      afn: 1398,
-      evn: 2210,
-    },
-    {
-      name: 'Mar',
-      mrn: 2000,
-      afn: 9800,
-      evn: 2290,
-    },
-    {
-      name: 'Apr',
-      mrn: 2780,
-      afn: 3908,
-      evn: 2000,
-    },
-    {
-      name: 'May',
-      mrn: 1890,
-      afn: 4800,
-      evn: 2181,
-    },
-    {
-      name: 'Jun',
-      mrn: 2390,
-      afn: 3800,
-      evn: 2500,
-    },
-    {
-      name: 'Jul',
-      mrn: 3490,
-      afn: 4300,
-      evn: 2100,
-    },
-  ];
+
 export default function AverageWaterConsumption() {
+
+  const flowSensors:SensorType[] = [];
+  sensorInfo.flowSensors.map((sensor) => {
+    flowSensors.push({...sensor,readings:sensor.readings.map((reading) => {
+      return {...reading,timestamp: new Date(reading.timestamp)}
+    })})
+    //console.log(sensor)
+  })
+  const chartData = flowSensors.map((sensor) => {
+    return {name:sensor.sensor_id,mrn:sensor.readings.filter((reading) => {
+      return reading.timestamp.getHours() >= 0 && reading.timestamp.getHours() <= 11
+    }).map((reading) => {
+      return reading.value
+    }).reduce((a,b) => a + b,0),afn:sensor.readings.filter((reading) => {
+      return reading.timestamp.getHours() >= 12 && reading.timestamp.getHours() <= 17
+    }).map((reading) => {
+      return reading.value
+    }).reduce((a,b) => a + b,0),evn:sensor.readings.filter((reading) => {
+      return reading.timestamp.getHours() >= 18 && reading.timestamp.getHours() <= 23
+    }).map((reading) => {
+      return reading.value
+    }).reduce((a,b) => a + b,0)}
+  })
+  console.log(chartData)
+  // console.log(flowSensors)
+  // const sensorReadings = flowSensors.map((sensor) => {
+  //   return sensor.readings.map((reading) => {
+  //     return reading.value
+  //   })
+  // })
+  // console.log(sensorReadings)
+  // const morningReadings = flowSensors.map((sensor) => {
+  //   return sensor.readings.filter((reading) => {
+  //     return reading.timestamp.getHours() >= 0 && reading.timestamp.getHours() <= 11
+  //   })
+  // })
+  // console.log(`morning readings ${morningReadings}`)
+  // const afternoonReadings = flowSensors.map((sensor) => {
+  //   return sensor.readings.filter((reading) => {
+      
+  //     return reading.timestamp.getHours() >= 12 && reading.timestamp.getHours() <= 17
+  //   })
+  // })
+  // console.log(`afternoon readings ${afternoonReadings}`)
+  // const eveningReadings = flowSensors.map((sensor) => {
+  //   return sensor.readings.filter((reading) => {
+  //     return reading.timestamp.getHours() >= 18 && reading.timestamp.getHours() <= 23
+  //   })
+  // })
+  // console.log(`evening readings ${eveningReadings}`)
   return (
    <div className='bg-base-200 py-2 px-6 rounded-md mx-2'>
     <div className="flex justify-between py-2 border-b ">
@@ -57,7 +66,7 @@ export default function AverageWaterConsumption() {
         <BarChart
           width={500}
           height={300}
-          data={data}
+          data={chartData}
           margin={{
             top: 5,
             right: 30,
